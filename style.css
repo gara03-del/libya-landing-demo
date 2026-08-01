@@ -1,0 +1,188 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background: #000;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background: #111;
+    box-shadow: 0 30px 50px #505050;
+}
+
+#slide {
+    width: max-content;
+    margin-top: 50px;
+}
+
+.item {
+    width: 200px;
+    height: 300px;
+    background-position: 50% 50%;
+    display: inline-block;
+    transition: 0.5s;
+    background-size: cover;
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    transform: translate(0, -50%);
+    border-radius: 20px;
+    box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+}
+
+/* الشريحة الأولى والثانية تأخذ كامل الشاشة كخلفية */
+.item:nth-child(1),
+.item:nth-child(2) {
+    left: 0;
+    top: 0;
+    transform: translate(0, 0);
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+}
+
+/* ترتيب البطاقات المصغرة */
+.item:nth-child(3) { left: 50%; }
+.item:nth-child(4) { left: calc(50% + 220px); }
+.item:nth-child(5) { left: calc(50% + 440px); }
+
+/* إخفاء البطاقات الزائدة */
+.item:nth-child(n+6) {
+    left: calc(50% + 660px);
+    opacity: 0;
+}
+
+/* --- هنا التعديل الأساسي للنص --- */
+.item .content {
+    position: absolute;
+    top: 50%;
+    left: 80px;  /* مسافة من اليسار */
+    right: auto; /* إلغاء التموضع من اليمين */
+    width: 400px; /* عرض مناسب للنص */
+    text-align: left; /* محاذاة النص لليسار */
+    color: #eee;
+    transform: translate(0, -50%);
+    display: none;
+    font-family: 'Cairo', sans-serif;
+}
+
+/* إظهار المحتوى فقط في الشريحة النشطة (رقم 2) */
+.item:nth-child(2) .content {
+    display: block;
+    z-index: 11111;
+}
+
+/* --- تعديل الظل ليكون غامق من اليسار --- */
+.item:nth-child(2)::before {
+    content: '';
+    position: absolute;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    /* تدرج لوني يبدأ أسود من اليسار ويصبح شفافاً جهة اليمين */
+    background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+    z-index: -1;
+}
+
+/* انميشن النصوص */
+.item .name {
+    font-size: 50px; /* تكبير الخط قليلاً للعنوان */
+    font-weight: 900;
+    opacity: 0;
+    animation: showcontent 1s ease-in-out 1 forwards;
+}
+
+.item .des {
+    margin: 20px 0;
+    opacity: 0;
+    animation: showcontent 1s ease-in-out 0.3s 1 forwards;
+    line-height: 1.6;
+    font-size: 18px;
+}
+
+.item button {
+    padding: 12px 30px;
+    border: none;
+    opacity: 0;
+    animation: showcontent 1s ease-in-out 0.6s 1 forwards;
+    background-color: #f1c40f;
+    color: #000;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.item button:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+@keyframes showcontent {
+    from { opacity: 0; transform: translate(0, 100px); filter: blur(33px); }
+    to { opacity: 1; transform: translate(0, 0); filter: blur(0); }
+}
+
+/* أزرار التحكم */
+.buttons {
+    position: absolute;
+    bottom: 40px;
+    left: 50%; 
+    transform: translateX(-50%);
+    z-index: 22222;
+    text-align: center;
+    width: 100%;
+}
+
+.buttons button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    transition: 0.5s;
+    cursor: pointer;
+    margin: 0 10px;
+    backdrop-filter: blur(5px);
+}
+
+.buttons button:hover {
+    background-color: #f1c40f;
+    color: #000;
+    border-color: #f1c40f;
+}
+
+/* جعل التصميم متجاوب للجوال */
+@media screen and (max-width: 768px) {
+    .item .content {
+        left: 50%; /* في الجوال يرجع للنص */
+        transform: translate(-50%, -50%);
+        width: 90%;
+        text-align: center; /* في الجوال النص في الوسط أجمل */
+    }
+    
+    .item:nth-child(2)::before {
+        /* في الجوال الظل يكون من الأسفل للأعلى لضمان قراءة النص */
+        background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    }
+    
+    .item:nth-child(3) { left: 50%; opacity: 0.5; transform: translate(-50%, 50%) scale(0.8); top: 70%; }
+    .item:nth-child(4) { display: none; }
+    .item:nth-child(5) { display: none; }
+}
